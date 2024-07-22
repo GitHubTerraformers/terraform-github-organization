@@ -20,4 +20,23 @@ module "org" {
   dependency_graph_enabled_for_new_repositories            = true
   dependabot_security_updates_enabled_for_new_repositories = true
 
+  teams = {
+    MYTEAM = {
+      description = "My awesome team"
+      privacy     = "closed"
+      members     = ["vmvarela"]
+    }
+
+    OTHERTEAM = {
+      description      = "Another awesome team"
+      security_manager = true
+      maintainers      = ["vmvarela"]
+      parent_team      = "MYTEAM"
+      privacy          = "closed"
+      review_request_delegation = {
+        algorithm    = "LOAD_BALANCE"
+        member_count = 2
+      }
+    }
+  }
 }

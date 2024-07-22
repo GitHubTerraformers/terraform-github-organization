@@ -26,3 +26,51 @@ resource "github_organization_settings" "this" {
   secret_scanning_enabled_for_new_repositories                 = var.secret_scanning_enabled_for_new_repositories
   secret_scanning_push_protection_enabled_for_new_repositories = var.secret_scanning_push_protection_enabled_for_new_repositories
 }
+
+resource "github_team" "this" {
+  for_each       = var.teams
+  name           = each.key
+  description    = each.value["description"]
+  privacy        = each.value["privacy"]
+  parent_team_id = each.value["parent_team"]
+}
+
+resource "github_team_members" "this" {
+  for_each = var.teams
+  team_id  = github_team.this[each.key].id
+  dynamic "members" {
+    for_each = each.value["members"] != null ? each.value["members"] : []
+    content {
+      username = members.value
+      role     = "member"
+    }
+  }
+  dynamic "members" {
+    for_each = each.value["maintainers"] != null ? each.value["maintainers"] : []
+    content {
+      username = members.value
+      role     = "maintainer"
+    }
+  }
+}
+
+resource "github_team_settings" "this" {
+  for_each = {
+    for team, team_data in var.teams : team => team_data
+    if team_data["review_request_delegation"] != null
+  }
+  team_id = github_team.this[each.key].id
+  review_request_delegation {
+    algorithm    = each.value["review_request_delegation"]["algorithm"]
+    member_count = each.value["review_request_delegation"]["member_count"]
+    notify       = each.value["review_request_delegation"]["notify"]
+  }
+}
+
+resource "github_organization_security_manager" "this" {
+  for_each = {
+    for team, team_data in var.teams : team => team_data
+    if try(team_data["security_manager"], false) == true
+  }
+  team_slug = github_team.this[each.key].slug
+}

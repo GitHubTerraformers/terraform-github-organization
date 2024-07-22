@@ -152,3 +152,21 @@ variable "secret_scanning_push_protection_enabled_for_new_repositories" {
   type        = bool
   default     = null
 }
+
+variable "teams" {
+  description = "(Optional) A list of teams to add to the organization."
+  type = map(object({
+    description      = optional(string)
+    security_manager = optional(bool)
+    privacy          = optional(string)
+    parent_team      = optional(string)
+    members          = optional(list(string))
+    maintainers      = optional(list(string))
+    review_request_delegation = optional(object({
+      algorithm    = optional(string)
+      member_count = optional(number)
+      notify       = optional(bool)
+    }))
+  }))
+  default = {}
+}
