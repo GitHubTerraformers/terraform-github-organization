@@ -74,3 +74,42 @@ resource "github_organization_security_manager" "this" {
   }
   team_slug = github_team.this[each.key].slug
 }
+
+data "github_repository" "this" {
+  for_each = local.repositories != null ? toset(local.repositories) : []
+  name     = each.key
+}
+
+resource "github_actions_organization_secret" "this" {
+  for_each        = try(var.secrets, null) != null ? var.secrets : {}
+  visibility      = each.value.visibility
+  secret_name     = each.key
+  encrypted_value = each.value.encrypted_value
+  plaintext_value = each.value.plaintext_value
+  selected_repository_ids = each.value.repositories != null ? [
+    for repository in each.value.repositories :
+    data.github_repository.this[repository].repo_id
+  ] : []
+}
+
+resource "github_actions_organization_variable" "this" {
+  for_each      = try(var.variables, null) != null ? var.variables : {}
+  visibility    = each.value.visibility
+  variable_name = each.key
+  value         = each.value.value
+  selected_repository_ids = each.value.repositories != null ? [
+    for repository in each.value.repositories :
+    data.github_repository.this[repository].repo_id
+  ] : []
+}
+
+locals {
+  repositories = distinct(concat(
+    flatten([
+      for secret, secret_data in var.secrets : secret_data.repositories if secret_data.repositories != null
+    ]),
+    flatten([
+      for variable, variable_data in var.variables : variable_data.repositories if variable_data.repositories != null
+    ])
+  ))
+}

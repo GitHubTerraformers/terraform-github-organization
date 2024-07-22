@@ -170,3 +170,24 @@ variable "teams" {
   }))
   default = {}
 }
+
+variable "secrets" {
+  description = "(Optional) The list of secrets configuration of the organization (key: secret_name)"
+  type = map(object({
+    encrypted_value = optional(string)
+    plaintext_value = optional(string)
+    visibility      = optional(string, "all")
+    repositories    = optional(list(string))
+  }))
+  default = null
+}
+
+variable "variables" {
+  description = "(Optional) The list of variables configuration of the organization (key: variable_name)"
+  type = map(object({
+    value        = string
+    visibility   = optional(string, "all")
+    repositories = optional(list(string))
+  }))
+  default = null
+}

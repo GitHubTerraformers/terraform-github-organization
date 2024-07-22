@@ -39,4 +39,19 @@ module "org" {
       }
     }
   }
+
+  secrets = {
+    MYSECRET = {
+      plaintext_value = "mysecret"
+      #      visibility      = "all"
+    }
+  }
+
+  variables = {
+    email = {
+      value        = "vmvarela@gmail.com"
+      visibility   = "selected"
+      repositories = ["terraform-github-organization"]
+    }
+  }
 }
