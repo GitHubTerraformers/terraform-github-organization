@@ -103,6 +103,127 @@ resource "github_actions_organization_variable" "this" {
   ] : []
 }
 
+resource "github_organization_ruleset" "this" {
+  for_each    = try(var.rulesets, null) != null ? var.rulesets : {}
+  name        = each.key
+  enforcement = each.value.enforcement
+  rules {
+    dynamic "branch_name_pattern" {
+      for_each = try(each.value.rules.branch_name_pattern, null) != null ? [1] : []
+      content {
+        operator = each.value.rules.branch_name_pattern.operator
+        pattern  = each.value.rules.branch_name_pattern.pattern
+        name     = each.value.rules.branch_name_pattern.name
+        negate   = each.value.rules.branch_name_pattern.negate
+      }
+    }
+    dynamic "commit_author_email_pattern" {
+      for_each = try(each.value.rules.commit_author_email_pattern, null) != null ? [1] : []
+      content {
+        operator = each.value.rules.commit_author_email_pattern.operator
+        pattern  = each.value.rules.commit_author_email_pattern.pattern
+        name     = each.value.rules.commit_author_email_pattern.name
+        negate   = each.value.rules.commit_author_email_pattern.negate
+      }
+    }
+    dynamic "commit_message_pattern" {
+      for_each = try(each.value.rules.commit_message_pattern, null) != null ? [1] : []
+      content {
+        operator = each.value.rules.commit_message_pattern.operator
+        pattern  = each.value.rules.commit_message_pattern.pattern
+        name     = each.value.rules.commit_message_pattern.name
+        negate   = each.value.rules.commit_message_pattern.negate
+      }
+    }
+    dynamic "committer_email_pattern" {
+      for_each = try(each.value.rules.committer_email_pattern, null) != null ? [1] : []
+      content {
+        operator = each.value.rules.committer_email_pattern.operator
+        pattern  = each.value.rules.committer_email_pattern.pattern
+        name     = each.value.rules.committer_email_pattern.name
+        negate   = each.value.rules.committer_email_pattern.negate
+      }
+    }
+    creation         = each.value.rules.creation
+    deletion         = each.value.rules.deletion
+    non_fast_forward = each.value.rules.non_fast_forward
+    dynamic "pull_request" {
+      for_each = try(each.value.rules.pull_request, null) != null ? [1] : []
+      content {
+        dismiss_stale_reviews_on_push     = each.value.rules.pull_request.dismiss_stale_reviews_on_push
+        require_code_owner_review         = each.value.rules.pull_request.require_code_owner_review
+        require_last_push_approval        = each.value.rules.pull_request.require_last_push_approval
+        required_approving_review_count   = each.value.rules.pull_request.required_approving_review_count
+        required_review_thread_resolution = each.value.rules.pull_request.required_review_thread_resolution
+      }
+    }
+    required_linear_history = each.value.rules.required_linear_history
+    required_signatures     = each.value.rules.required_signatures
+    dynamic "required_status_checks" {
+      for_each = (each.value.rules.required_status_checks != null) ? [1] : []
+      content {
+        dynamic "required_check" {
+          for_each = each.value.rules.required_status_checks
+          content {
+            context        = required_check.key
+            integration_id = required_check.value
+          }
+        }
+        strict_required_status_checks_policy = each.value.strict_required_status_checks_policy
+      }
+    }
+    dynamic "tag_name_pattern" {
+      for_each = try(each.value.rules.tag_name_pattern, null) != null ? [1] : []
+      content {
+        operator = each.value.rules.tag_name_pattern.operator
+        pattern  = each.value.rules.tag_name_pattern.pattern
+        name     = each.value.rules.tag_name_pattern.name
+        negate   = each.value.rules.tag_name_pattern.negate
+      }
+    }
+    dynamic "required_workflows" {
+      for_each = each.value.rules.required_workflows != null ? [1] : []
+      content {
+        dynamic "required_workflow" {
+          for_each = each.value.rules.required_workflows != null ? each.value.rules.required_workflows : []
+          content {
+            repository_id = data.github_repository.this[required_workflow.value.repository].repo_id
+            path          = required_workflow.value.path
+            ref           = required_workflow.value.ref
+          }
+        }
+      }
+    }
+    update = each.value.rules.update
+  }
+  target = each.value.target
+  dynamic "bypass_actors" {
+    for_each = (each.value.bypass_actors != null) ? each.value.bypass_actors : {}
+    content {
+      actor_id    = bypass_actors.key
+      actor_type  = bypass_actors.value.actor_type
+      bypass_mode = bypass_actors.value.bypass_mode
+    }
+  }
+  dynamic "conditions" {
+    for_each = (length(each.value.include) + length(each.value.exclude) > 0) ? [1] : []
+    content {
+      ref_name {
+        include = [for p in each.value.include :
+          substr(p, 0, 1) == "~" ? p : format("refs/%s/%s", each.value.target == "branch" ? "heads" : "tags", p)
+        ]
+        exclude = [for p in each.value.exclude :
+          substr(p, 0, 1) == "~" ? p : format("refs/%s/%s", each.value.target == "branch" ? "heads" : "tags", p)
+        ]
+      }
+      repository_name {
+        include = each.value.repositories
+        exclude = []
+      }
+    }
+  }
+}
+
 locals {
   repositories = distinct(concat(
     flatten([
@@ -110,6 +231,9 @@ locals {
     ]),
     flatten([
       for variable, variable_data in var.variables : variable_data.repositories if variable_data.repositories != null
+    ]),
+    flatten([
+      for _, data in flatten(try([for r in var.rulesets : r.required_workflows], [])) : try(data.repository, null)
     ])
   ))
 }

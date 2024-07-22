@@ -54,4 +54,37 @@ module "org" {
       repositories = ["terraform-github-organization"]
     }
   }
+
+  rulesets = {
+    "test" = {
+      target       = "branch"
+      exclude      = ["feature/*", "hotfix/*", "release/*"]
+      repositories = ["terraform-github-organization"]
+      rules = {
+        creation = true
+      }
+    }
+    "test-2" = {
+      target       = "tag"
+      include      = ["~ALL"]
+      repositories = ["terraform-github-repository"]
+      rules = {
+        deletion = true
+      }
+    }
+    "check-pr" = {
+      target       = "branch"
+      include      = ["~DEFAULT_BRANCH"]
+      repositories = ["~ALL"]
+      rules = {
+        required_workflows = [
+          {
+            repository = "terraform-github-organization"
+            path       = ".github/workflows/check-pr.yml"
+            ref        = "main"
+          }
+        ]
+      }
+    }
+  }
 }

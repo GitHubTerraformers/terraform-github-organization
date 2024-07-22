@@ -191,3 +191,79 @@ variable "variables" {
   }))
   default = null
 }
+
+variable "rulesets" {
+  description = "(Optional) Organization rules"
+  type = map(object({
+    enforcement = optional(string, "active")
+    rules = optional(object({
+      branch_name_pattern = optional(object({
+        operator = optional(string)
+        pattern  = optional(string)
+        name     = optional(string)
+        negate   = optional(bool)
+      }))
+      commit_author_email_pattern = optional(object({
+        operator = optional(string)
+        pattern  = optional(string)
+        name     = optional(string)
+        negate   = optional(bool)
+      }))
+      commit_message_pattern = optional(object({
+        operator = optional(string)
+        pattern  = optional(string)
+        name     = optional(string)
+        negate   = optional(bool)
+      }))
+      committer_email_pattern = optional(object({
+        operator = optional(string)
+        pattern  = optional(string)
+        name     = optional(string)
+        negate   = optional(bool)
+      }))
+      creation         = optional(bool)
+      deletion         = optional(bool)
+      non_fast_forward = optional(bool)
+      pull_request = optional(object({
+        dismiss_stale_reviews_on_push     = optional(bool)
+        require_code_owner_review         = optional(bool)
+        require_last_push_approval        = optional(bool)
+        required_approving_review_count   = optional(number)
+        required_review_thread_resolution = optional(bool)
+      }))
+      required_workflows = optional(list(object({
+        repository = string
+        path       = string
+        ref        = optional(string)
+      })))
+      required_linear_history              = optional(bool)
+      required_signatures                  = optional(bool)
+      required_status_checks               = optional(map(string))
+      strict_required_status_checks_policy = optional(bool)
+      tag_name_pattern = optional(object({
+        operator = optional(string)
+        pattern  = optional(string)
+        name     = optional(string)
+        negate   = optional(bool)
+      }))
+      update = optional(bool)
+    }))
+    target = optional(string, "branch")
+    bypass_actors = optional(map(object({
+      actor_type  = string
+      bypass_mode = string
+    })))
+    include      = optional(list(string), [])
+    exclude      = optional(list(string), [])
+    repositories = optional(list(string))
+  }))
+  default = {}
+  validation {
+    condition     = alltrue([for name, config in(var.rulesets == null ? {} : var.rulesets) : contains(["active", "evaluate", "disabled"], config.enforcement)])
+    error_message = "Possible values for enforcement are active, evaluate or disabled."
+  }
+  validation {
+    condition     = alltrue([for name, config in(var.rulesets == null ? {} : var.rulesets) : contains(["tag", "branch"], config.target)])
+    error_message = "Possible values for ruleset target are tag or branch"
+  }
+}
