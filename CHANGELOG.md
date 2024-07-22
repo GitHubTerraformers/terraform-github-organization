@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/GitHubTerraformers/terraform-github-organization/compare/v0.3.0...v0.4.0) (2024-07-22)
+
+
+### Features
+
+* organization rulesets ([42ab967](https://github.com/GitHubTerraformers/terraform-github-organization/commit/42ab9673e142131cab7efa4b42549dd1da4de959))
+
 ## [0.3.0](https://github.com/GitHubTerraformers/terraform-github-organization/compare/v0.2.0...v0.3.0) (2024-07-22)
 
 
