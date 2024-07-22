@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/GitHubTerraformers/terraform-github-organization/compare/v0.2.0...v0.3.0) (2024-07-22)
+
+
+### Features
+
+* variables and secrets ([6169a04](https://github.com/GitHubTerraformers/terraform-github-organization/commit/6169a047480eb733b5136861b99687992dbdd61d))
+
 ## [0.2.0](https://github.com/GitHubTerraformers/terraform-github-organization/compare/v0.1.0...v0.2.0) (2024-07-22)
 
 
