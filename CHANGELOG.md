@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/GitHubTerraformers/terraform-github-organization/compare/v0.1.0...v0.2.0) (2024-07-22)
+
+
+### Features
+
+* team members, settings and security team role ([a50a181](https://github.com/GitHubTerraformers/terraform-github-organization/commit/a50a181b94919bdc6d28e173592eb3a8523afc16))
+
 ## 0.1.0 (2024-07-17)
 
 
