@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/GitHubTerraformers/terraform-github-organization/compare/v0.4.0...v0.5.0) (2024-07-23)
+
+
+### Features
+
+* organization webhooks ([c0506c2](https://github.com/GitHubTerraformers/terraform-github-organization/commit/c0506c2c2187a77540172584159c100ea12d7c0c))
+
 ## [0.4.0](https://github.com/GitHubTerraformers/terraform-github-organization/compare/v0.3.0...v0.4.0) (2024-07-22)
 
 
