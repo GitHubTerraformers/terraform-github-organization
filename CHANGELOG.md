@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/GitHubTerraformers/terraform-github-organization/compare/v0.6.0...v0.7.0) (2024-07-23)
+
+
+### Features
+
+* actions permissions configuration ([c6ad3e2](https://github.com/GitHubTerraformers/terraform-github-organization/commit/c6ad3e27d6abe31998f954d7db8eb86a2c272d53))
+
 ## [0.6.0](https://github.com/GitHubTerraformers/terraform-github-organization/compare/v0.5.0...v0.6.0) (2024-07-23)
 
 
