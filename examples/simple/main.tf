@@ -103,4 +103,12 @@ module "org" {
       permissions = ["remove_assignee"]
     }
   }
+
+  # actions_permissions = {
+  #   allowed_actions       = "local_only"
+  #   enabled_repositories  = "selected"
+  #   github_owned_actions  = true
+  #   verified_actions      = true
+  #   selected_repositories = ["terraform-github-organization", "terraform-github-repository"]
+  # }
 }

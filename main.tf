@@ -244,6 +244,22 @@ resource "github_organization_custom_role" "this" {
   permissions = each.value.permissions
 }
 
+resource "github_actions_organization_permissions" "this" {
+  count                = var.actions_permissions != null ? 1 : 0
+  allowed_actions      = try(var.actions_permissions.allowed_actions, "all")
+  enabled_repositories = try(var.actions_permissions.enabled_repositories, "all")
+  allowed_actions_config {
+    github_owned_allowed = try(var.actions_permissions.github_owned_actions, true)
+    patterns_allowed     = try(var.actions_permissions.patterns_actions, [])
+    verified_allowed     = try(var.actions_permissions.verified_actions, true)
+  }
+  enabled_repositories_config {
+    repository_ids = [for repository in try(var.actions_permissions.selected_repositories, []) :
+      data.github_repository.this[repository].repo_id
+    ]
+  }
+}
+
 locals {
   repositories = distinct(concat(
     flatten([
@@ -254,6 +270,7 @@ locals {
     ]),
     flatten([
       for _, data in flatten(try([for r in var.rulesets : r.required_workflows], [])) : try(data.repository, null)
-    ])
+    ]),
+    try(var.actions_permissions.selected_repositories, []),
   ))
 }

@@ -302,3 +302,16 @@ variable "custom_roles" {
     error_message = "Possible values for base_role are read, triage, write or maintain."
   }
 }
+
+variable "actions_permissions" {
+  description = "(Optional) The actions permissions configuration of the organization"
+  type = object({
+    allowed_actions       = optional(string)
+    enabled_repositories  = optional(string)
+    github_owned_actions  = optional(bool)
+    patterns_actions      = optional(list(string), [])
+    verified_actions      = optional(bool)
+    selected_repositories = optional(list(string), [])
+  })
+  default = null
+}
