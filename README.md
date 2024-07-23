@@ -7,7 +7,9 @@ These features of Github Organization configurations are supported:
 - settings
 - teams (w/security manager role)
 - secrets & variables
-- rulesets
+- rulesets (enterprise)
+- webhooks
+- custom roles (enterprise)
 
 ## Usage
 
