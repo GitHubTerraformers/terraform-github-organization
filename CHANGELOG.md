@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.6.0](https://github.com/GitHubTerraformers/terraform-github-organization/compare/v0.5.0...v0.6.0) (2024-07-23)
+
+
+### Features
+
+* custom roles ([9732488](https://github.com/GitHubTerraformers/terraform-github-organization/commit/973248873c0a89ac42a95a8fbff2c58c769f1a74))
+* custom roles ([dbb1424](https://github.com/GitHubTerraformers/terraform-github-organization/commit/dbb1424455c2993ab8e030205d9a38013951b2b7))
+
 ## [0.5.0](https://github.com/GitHubTerraformers/terraform-github-organization/compare/v0.4.0...v0.5.0) (2024-07-23)
 
 
