@@ -95,4 +95,12 @@ module "org" {
       events       = ["deployment"]
     }
   }
+
+  custom_roles = {
+    "myrole" = {
+      description = "My custom role"
+      base_role   = "write"
+      permissions = ["remove_assignee"]
+    }
+  }
 }

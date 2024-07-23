@@ -104,7 +104,7 @@ resource "github_actions_organization_variable" "this" {
 }
 
 resource "github_organization_ruleset" "this" {
-  for_each    = try(var.rulesets, null) != null ? var.rulesets : {}
+  for_each    = (var.enterprise && try(var.rulesets, null) != null) ? var.rulesets : {}
   name        = each.key
   enforcement = each.value.enforcement
   rules {
@@ -234,6 +234,14 @@ resource "github_organization_webhook" "this" {
     secret       = each.value.secret
   }
   events = each.value.events
+}
+
+resource "github_organization_custom_role" "this" {
+  for_each    = (var.enterprise && try(var.custom_roles, null) != null) ? var.custom_roles : {}
+  name        = each.key
+  description = each.value.description
+  base_role   = each.value.base_role
+  permissions = each.value.permissions
 }
 
 locals {

@@ -3,6 +3,12 @@ variable "billing_email" {
   type        = string
 }
 
+variable "enterprise" {
+  description = "(Optional) True if the organization is associated with an enterprise account."
+  type        = bool
+  default     = false
+}
+
 variable "company" {
   description = "(Optional) The company name for the organization."
   type        = string
@@ -280,5 +286,19 @@ variable "webhooks" {
   validation {
     condition     = alltrue([for url, config in(var.webhooks == null ? {} : var.webhooks) : contains(["form", "json"], config.content_type)])
     error_message = "Possible values for content_type are json or form."
+  }
+}
+
+variable "custom_roles" {
+  description = "(Optional) The list of custom roles of the organization (key: role_name)"
+  type = map(object({
+    description = optional(string)
+    base_role   = string
+    permissions = list(string)
+  }))
+  default = null
+  validation {
+    condition     = alltrue([for role, config in(var.custom_roles == null ? {} : var.custom_roles) : contains(["read", "triage", "write", "maintain"], config.base_role)])
+    error_message = "Possible values for base_role are read, triage, write or maintain."
   }
 }
