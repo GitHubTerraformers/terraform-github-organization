@@ -260,6 +260,7 @@ resource "github_actions_organization_permissions" "this" {
   }
 }
 
+# Local variables
 locals {
   repositories = distinct(concat(
     flatten([
