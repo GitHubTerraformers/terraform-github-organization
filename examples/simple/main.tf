@@ -87,4 +87,12 @@ module "org" {
       }
     }
   }
+
+  webhooks = {
+    "https://google.es/" = {
+      content_type = "form"
+      insecure_ssl = false
+      events       = ["deployment"]
+    }
+  }
 }

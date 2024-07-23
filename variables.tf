@@ -267,3 +267,18 @@ variable "rulesets" {
     error_message = "Possible values for ruleset target are tag or branch"
   }
 }
+
+variable "webhooks" {
+  description = "(Optional) The list of webhooks of the organization (key: webhook_url)"
+  type = map(object({
+    content_type = string
+    insecure_ssl = optional(bool, false)
+    secret       = optional(string)
+    events       = optional(list(string))
+  }))
+  default = null
+  validation {
+    condition     = alltrue([for url, config in(var.webhooks == null ? {} : var.webhooks) : contains(["form", "json"], config.content_type)])
+    error_message = "Possible values for content_type are json or form."
+  }
+}

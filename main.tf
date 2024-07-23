@@ -224,6 +224,18 @@ resource "github_organization_ruleset" "this" {
   }
 }
 
+resource "github_organization_webhook" "this" {
+  for_each = try(var.webhooks, null) != null ? var.webhooks : {}
+  active   = true
+  configuration {
+    url          = each.key
+    content_type = each.value.content_type
+    insecure_ssl = each.value.insecure_ssl
+    secret       = each.value.secret
+  }
+  events = each.value.events
+}
+
 locals {
   repositories = distinct(concat(
     flatten([
