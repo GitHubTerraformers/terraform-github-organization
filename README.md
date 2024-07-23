@@ -10,6 +10,7 @@ These features of Github Organization configurations are supported:
 - rulesets (enterprise)
 - webhooks
 - custom roles (enterprise)
+- actions permissions config
 
 ## Usage
 
