@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/GitHubTerraformers/terraform-github-organization/compare/v0.7.0...v0.8.0) (2024-07-24)
+
+
+### Features
+
+* runner groups & existing secrets ([#8](https://github.com/GitHubTerraformers/terraform-github-organization/issues/8)) ([a9bcdf4](https://github.com/GitHubTerraformers/terraform-github-organization/commit/a9bcdf458c131d4eabd2babda80119c849c75b27))
+
 ## [0.7.0](https://github.com/GitHubTerraformers/terraform-github-organization/compare/v0.6.0...v0.7.0) (2024-07-23)
 
 
