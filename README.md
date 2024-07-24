@@ -6,11 +6,12 @@ These features of Github Organization configurations are supported:
 
 - settings
 - teams (w/security manager role)
-- secrets & variables
+- secrets (managed/existing) & variables
 - rulesets (enterprise)
 - webhooks
 - custom roles (enterprise)
 - actions permissions config
+- runner groups (enterprise)
 
 ## Usage
 
@@ -130,7 +131,9 @@ No modules.
 |------|------|
 | [github_actions_organization_permissions.this](https://registry.terraform.io/providers/integrations/github/6.2.3/docs/resources/actions_organization_permissions) | resource |
 | [github_actions_organization_secret.this](https://registry.terraform.io/providers/integrations/github/6.2.3/docs/resources/actions_organization_secret) | resource |
+| [github_actions_organization_secret_repositories.this](https://registry.terraform.io/providers/integrations/github/6.2.3/docs/resources/actions_organization_secret_repositories) | resource |
 | [github_actions_organization_variable.this](https://registry.terraform.io/providers/integrations/github/6.2.3/docs/resources/actions_organization_variable) | resource |
+| [github_actions_runner_group.this](https://registry.terraform.io/providers/integrations/github/6.2.3/docs/resources/actions_runner_group) | resource |
 | [github_organization_custom_role.this](https://registry.terraform.io/providers/integrations/github/6.2.3/docs/resources/organization_custom_role) | resource |
 | [github_organization_ruleset.this](https://registry.terraform.io/providers/integrations/github/6.2.3/docs/resources/organization_ruleset) | resource |
 | [github_organization_security_manager.this](https://registry.terraform.io/providers/integrations/github/6.2.3/docs/resources/organization_security_manager) | resource |
@@ -171,6 +174,7 @@ No modules.
 | <a name="input_members_can_fork_private_repositories"></a> [members\_can\_fork\_private\_repositories](#input\_members\_can\_fork\_private\_repositories) | (Optional) Whether members can fork private repositories. | `bool` | `null` | no |
 | <a name="input_name"></a> [name](#input\_name) | (Optional) The name for the organization. | `string` | `null` | no |
 | <a name="input_rulesets"></a> [rulesets](#input\_rulesets) | (Optional) Organization rules | <pre>map(object({<br>    enforcement = optional(string, "active")<br>    rules = optional(object({<br>      branch_name_pattern = optional(object({<br>        operator = optional(string)<br>        pattern  = optional(string)<br>        name     = optional(string)<br>        negate   = optional(bool)<br>      }))<br>      commit_author_email_pattern = optional(object({<br>        operator = optional(string)<br>        pattern  = optional(string)<br>        name     = optional(string)<br>        negate   = optional(bool)<br>      }))<br>      commit_message_pattern = optional(object({<br>        operator = optional(string)<br>        pattern  = optional(string)<br>        name     = optional(string)<br>        negate   = optional(bool)<br>      }))<br>      committer_email_pattern = optional(object({<br>        operator = optional(string)<br>        pattern  = optional(string)<br>        name     = optional(string)<br>        negate   = optional(bool)<br>      }))<br>      creation         = optional(bool)<br>      deletion         = optional(bool)<br>      non_fast_forward = optional(bool)<br>      pull_request = optional(object({<br>        dismiss_stale_reviews_on_push     = optional(bool)<br>        require_code_owner_review         = optional(bool)<br>        require_last_push_approval        = optional(bool)<br>        required_approving_review_count   = optional(number)<br>        required_review_thread_resolution = optional(bool)<br>      }))<br>      required_workflows = optional(list(object({<br>        repository = string<br>        path       = string<br>        ref        = optional(string)<br>      })))<br>      required_linear_history              = optional(bool)<br>      required_signatures                  = optional(bool)<br>      required_status_checks               = optional(map(string))<br>      strict_required_status_checks_policy = optional(bool)<br>      tag_name_pattern = optional(object({<br>        operator = optional(string)<br>        pattern  = optional(string)<br>        name     = optional(string)<br>        negate   = optional(bool)<br>      }))<br>      update = optional(bool)<br>    }))<br>    target = optional(string, "branch")<br>    bypass_actors = optional(map(object({<br>      actor_type  = string<br>      bypass_mode = string<br>    })))<br>    include      = optional(list(string), [])<br>    exclude      = optional(list(string), [])<br>    repositories = optional(list(string))<br>  }))</pre> | `{}` | no |
+| <a name="input_runner_groups"></a> [runner\_groups](#input\_runner\_groups) | (Optional) The list of runner groups of the organization (key: runner\_group\_name) | <pre>map(object({<br>    workflows                 = optional(list(string))<br>    repositories              = optional(list(string))<br>    allow_public_repositories = optional(bool)<br>  }))</pre> | `null` | no |
 | <a name="input_secret_scanning_enabled_for_new_repositories"></a> [secret\_scanning\_enabled\_for\_new\_repositories](#input\_secret\_scanning\_enabled\_for\_new\_repositories) | (Optional) Whether secret scanning is enabled for new repositories. | `bool` | `null` | no |
 | <a name="input_secret_scanning_push_protection_enabled_for_new_repositories"></a> [secret\_scanning\_push\_protection\_enabled\_for\_new\_repositories](#input\_secret\_scanning\_push\_protection\_enabled\_for\_new\_repositories) | (Optional) Whether secret scanning push protection is enabled for new repositories. | `bool` | `null` | no |
 | <a name="input_secrets"></a> [secrets](#input\_secrets) | (Optional) The list of secrets configuration of the organization (key: secret\_name) | <pre>map(object({<br>    encrypted_value = optional(string)<br>    plaintext_value = optional(string)<br>    visibility      = optional(string, "all")<br>    repositories    = optional(list(string))<br>  }))</pre> | `null` | no |

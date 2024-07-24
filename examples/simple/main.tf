@@ -45,6 +45,9 @@ module "org" {
       plaintext_value = "mysecret"
       #      visibility      = "all"
     }
+    MYSECRET2 = {
+      repositories = ["terraform-github-organization"]
+    }
   }
 
   variables = {
@@ -111,4 +114,11 @@ module "org" {
   #   verified_actions      = true
   #   selected_repositories = ["terraform-github-organization", "terraform-github-repository"]
   # }
+
+  runner_groups = {
+    "MYRUNNERGROUP" = {
+      repositories = ["terraform-github-organization"]
+      workflows    = ["Release"]
+    }
+  }
 }
