@@ -315,3 +315,13 @@ variable "actions_permissions" {
   })
   default = null
 }
+
+variable "runner_groups" {
+  description = "(Optional) The list of runner groups of the organization (key: runner_group_name)"
+  type = map(object({
+    workflows                 = optional(list(string))
+    repositories              = optional(list(string))
+    allow_public_repositories = optional(bool)
+  }))
+  default = null
+}

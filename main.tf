@@ -81,11 +81,20 @@ data "github_repository" "this" {
 }
 
 resource "github_actions_organization_secret" "this" {
-  for_each        = try(var.secrets, null) != null ? var.secrets : {}
+  for_each        = try(local.managed_secrets, null) != null ? local.managed_secrets : {}
   visibility      = each.value.visibility
   secret_name     = each.key
   encrypted_value = each.value.encrypted_value
   plaintext_value = each.value.plaintext_value
+  selected_repository_ids = each.value.repositories != null ? [
+    for repository in each.value.repositories :
+    data.github_repository.this[repository].repo_id
+  ] : []
+}
+
+resource "github_actions_organization_secret_repositories" "this" {
+  for_each    = try(local.existing_secrets, null) != null ? local.existing_secrets : {}
+  secret_name = each.key
   selected_repository_ids = each.value.repositories != null ? [
     for repository in each.value.repositories :
     data.github_repository.this[repository].repo_id
@@ -260,6 +269,17 @@ resource "github_actions_organization_permissions" "this" {
   }
 }
 
+resource "github_actions_runner_group" "this" {
+  for_each   = (var.enterprise && try(var.runner_groups, null) != null) ? var.runner_groups : {}
+  name       = each.key
+  visibility = each.value.repositories != null ? "selected" : "all"
+  selected_repository_ids = [for repository in try(each.value.repositories, []) :
+    data.github_repository.this[repository].repo_id
+  ]
+  restricted_to_workflows = each.value.workflows != null
+  selected_workflows      = each.value.workflows
+}
+
 # Local variables
 locals {
   repositories = distinct(concat(
@@ -273,5 +293,15 @@ locals {
       for _, data in flatten(try([for r in var.rulesets : r.required_workflows], [])) : try(data.repository, null)
     ]),
     try(var.actions_permissions.selected_repositories, []),
+    try(var.runner_groups.repositories, []),
   ))
+
+  managed_secrets = {
+    for secret, secret_data in var.secrets : secret => secret_data
+    if secret_data.plaintext_value != null || secret_data.encrypted_value != null
+  }
+  existing_secrets = {
+    for secret, secret_data in var.secrets : secret => secret_data
+    if secret_data.plaintext_value == null && secret_data.encrypted_value == null
+  }
 }
