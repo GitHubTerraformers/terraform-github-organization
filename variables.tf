@@ -51,16 +51,10 @@ variable "description" {
   default     = null
 }
 
-variable "has_organization_projects" {
-  description = "(Optional) Whether organization projects are enabled."
-  type        = bool
-  default     = null
-}
-
-variable "has_repository_projects" {
-  description = "(Optional) Whether repository projects are enabled."
-  type        = bool
-  default     = null
+variable "features" {
+  description = "(Optional) The list of features enabled for the organization (organization_projects, repository_projects)"
+  type        = list(string)
+  default     = []
 }
 
 variable "default_repository_permission" {
@@ -69,52 +63,19 @@ variable "default_repository_permission" {
   default     = null
 }
 
-variable "members_can_create_repositories" {
-  description = "(Optional) Whether members can create repositories."
-  type        = bool
-  default     = null
-}
-
-variable "members_can_create_public_repositories" {
-  description = "(Optional) Whether members can create public repositories."
-  type        = bool
-  default     = null
-}
-
-variable "members_can_create_private_repositories" {
-  description = "(Optional) Whether members can create private repositories."
-  type        = bool
-  default     = null
-}
-
-variable "members_can_create_internal_repositories" {
-  description = "(Optional) Whether members can create internal repositories."
-  type        = bool
-  default     = null
-}
-
-variable "members_can_create_pages" {
-  description = "(Optional) Whether members can create pages."
-  type        = bool
-  default     = null
-}
-
-variable "members_can_create_public_pages" {
-  description = "(Optional) Whether members can create public pages."
-  type        = bool
-  default     = null
-}
-
-variable "members_can_create_private_pages" {
-  description = "(Optional) Whether members can create private pages."
-  type        = bool
-  default     = null
-}
-
-variable "members_can_fork_private_repositories" {
-  description = "(Optional) Whether members can fork private repositories."
-  type        = bool
-  default     = null
+variable "members_permissions" {
+  description = "(Optional) The default permission for organization members. Can create_repositories, create_public_repositories, create_private_repositories, or create_internal_repositories."
+  type        = list(string)
+  default = [
+    "create_repositories",
+    "create_public_repositories",
+    "create_private_repositories",
+    "create_internal_repositories",
+    "create_pages",
+    "create_public_pages",
+    "create_private_pages",
+    "fork_private_repositories"
+  ]
 }
 
 variable "web_commit_signoff_required" {
@@ -123,40 +84,17 @@ variable "web_commit_signoff_required" {
   default     = null
 }
 
-variable "advanced_security_enabled_for_new_repositories" {
-  description = "(Optional) Whether advanced security is enabled for new repositories."
-  type        = bool
-  default     = null
-}
-
-variable "dependabot_alerts_enabled_for_new_repositories" {
-  description = "(Optional) Whether dependabot alerts are enabled for new repositories."
-  type        = bool
-  default     = null
-}
-
-variable "dependabot_security_updates_enabled_for_new_repositories" {
-  description = "(Optional) Whether dependabot security updates are enabled for new repositories."
-  type        = bool
-  default     = null
-}
-
-variable "dependency_graph_enabled_for_new_repositories" {
-  description = "(Optional) Whether dependency graph is enabled for new repositories."
-  type        = bool
-  default     = null
-}
-
-variable "secret_scanning_enabled_for_new_repositories" {
-  description = "(Optional) Whether secret scanning is enabled for new repositories."
-  type        = bool
-  default     = null
-}
-
-variable "secret_scanning_push_protection_enabled_for_new_repositories" {
-  description = "(Optional) Whether secret scanning push protection is enabled for new repositories."
-  type        = bool
-  default     = null
+variable "security" {
+  description = "(Optional) The list of security features enabled for the organization."
+  type        = list(string)
+  default = [
+    "advanced",
+    "secret_scanning",
+    "secret_scanning_push_protection",
+    "dependabot_alerts",
+    "dependabot_security_updates",
+    "dependency_graph"
+  ]
 }
 
 variable "teams" {
@@ -164,7 +102,7 @@ variable "teams" {
   type = map(object({
     description      = optional(string)
     security_manager = optional(bool)
-    privacy          = optional(string)
+    privacy          = optional(string, "closed")
     parent_team      = optional(string)
     members          = optional(list(string))
     maintainers      = optional(list(string))
@@ -182,7 +120,6 @@ variable "secrets" {
   type = map(object({
     encrypted_value = optional(string)
     plaintext_value = optional(string)
-    visibility      = optional(string, "all")
     repositories    = optional(list(string))
   }))
   default = null
@@ -192,7 +129,6 @@ variable "variables" {
   description = "(Optional) The list of variables configuration of the organization (key: variable_name)"
   type = map(object({
     value        = string
-    visibility   = optional(string, "all")
     repositories = optional(list(string))
   }))
   default = null
