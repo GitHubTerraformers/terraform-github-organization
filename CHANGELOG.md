@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.0](https://github.com/GitHubTerraformers/terraform-github-organization/compare/v0.8.0...v1.0.0) (2024-07-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* variables refactoring
+
+### Features
+
+* variables refactoring ([a4ee828](https://github.com/GitHubTerraformers/terraform-github-organization/commit/a4ee8289dc8b2b0c2a796e21e99535705ece3fc2))
+
 ## [0.8.0](https://github.com/GitHubTerraformers/terraform-github-organization/compare/v0.7.0...v0.8.0) (2024-07-24)
 
 
