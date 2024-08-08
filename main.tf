@@ -36,7 +36,7 @@ resource "github_team" "this" {
 }
 
 resource "github_team_members" "this" {
-  for_each = var.teams
+  for_each = { for team, data in var.teams : team => data if data["members"] != null || data["maintainers"] != null }
   team_id  = github_team.this[each.key].id
   dynamic "members" {
     for_each = each.value["members"] != null ? each.value["members"] : []
