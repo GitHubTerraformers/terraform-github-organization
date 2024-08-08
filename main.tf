@@ -283,13 +283,13 @@ resource "github_actions_runner_group" "this" {
 # Local variables
 locals {
   repositories = distinct(concat(
-    flatten([
+    var.secrets == null ? [] : flatten([
       for secret, secret_data in var.secrets : secret_data.repositories if secret_data.repositories != null
     ]),
-    flatten([
+    var.variables == null ? [] : flatten([
       for variable, variable_data in var.variables : variable_data.repositories if variable_data.repositories != null
     ]),
-    flatten([
+    var.rulesets == null ? [] : flatten([
       for _, data in flatten(try([for r in var.rulesets : r.required_workflows], [])) : try(data.repository, null)
     ]),
     try(var.actions_permissions.selected_repositories, []),
