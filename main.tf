@@ -276,8 +276,8 @@ resource "github_actions_runner_group" "this" {
   selected_repository_ids = [for repository in try(each.value.repositories, []) :
     data.github_repository.this[repository].repo_id
   ]
-  restricted_to_workflows = each.value.workflows != null
-  selected_workflows      = each.value.workflows
+  restricted_to_workflows = try(each.value.workflows, null) != null
+  selected_workflows      = try(each.value.workflows, null)
 }
 
 # Local variables
