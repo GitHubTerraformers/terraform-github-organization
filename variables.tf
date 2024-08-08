@@ -27,7 +27,7 @@ variable "email" {
   default     = null
 }
 
-variable "twitter_username" {
+variable "twitter" {
   description = "(Optional) The Twitter username for the organization."
   type        = string
   default     = null

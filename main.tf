@@ -3,7 +3,7 @@ resource "github_organization_settings" "this" {
   company                                                      = var.company
   blog                                                         = var.blog
   email                                                        = var.email
-  twitter_username                                             = var.twitter_username
+  twitter_username                                             = var.twitter
   location                                                     = var.location
   name                                                         = var.name
   description                                                  = var.description
