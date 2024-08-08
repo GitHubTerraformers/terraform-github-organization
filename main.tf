@@ -272,7 +272,7 @@ resource "github_actions_organization_permissions" "this" {
 resource "github_actions_runner_group" "this" {
   for_each   = (var.enterprise && try(var.runner_groups, null) != null) ? var.runner_groups : {}
   name       = each.key
-  visibility = each.value.repositories != null ? "selected" : "all"
+  visibility = try(each.value.repositories, null) != null ? "selected" : "all"
   selected_repository_ids = [for repository in try(each.value.repositories, []) :
     data.github_repository.this[repository].repo_id
   ]
