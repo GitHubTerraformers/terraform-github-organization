@@ -296,11 +296,11 @@ locals {
     try(var.runner_groups.repositories, []),
   ))
 
-  managed_secrets = {
+  managed_secrets = var.secrets == null ? {} : {
     for secret, secret_data in var.secrets : secret => secret_data
     if secret_data.plaintext_value != null || secret_data.encrypted_value != null
   }
-  existing_secrets = {
+  existing_secrets = var.secrets == null ? {} : {
     for secret, secret_data in var.secrets : secret => secret_data
     if secret_data.plaintext_value == null && secret_data.encrypted_value == null
   }
