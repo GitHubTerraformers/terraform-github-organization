@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/GitHubTerraformers/terraform-github-organization/compare/v1.0.0...v1.0.1) (2024-08-09)
+
+
+### Bug Fixes
+
+* controls nullable inputs ([#11](https://github.com/GitHubTerraformers/terraform-github-organization/issues/11)) ([c6f80ba](https://github.com/GitHubTerraformers/terraform-github-organization/commit/c6f80ba75a041f82d9652c21a9ec337feafb13b1))
+
 ## [1.0.0](https://github.com/GitHubTerraformers/terraform-github-organization/compare/v0.8.0...v1.0.0) (2024-07-25)
 
 
