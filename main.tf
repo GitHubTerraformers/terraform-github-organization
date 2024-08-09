@@ -3,7 +3,7 @@ resource "github_organization_settings" "this" {
   company                                                      = var.company
   blog                                                         = var.blog
   email                                                        = var.email
-  twitter_username                                             = var.twitter_username
+  twitter_username                                             = var.twitter
   location                                                     = var.location
   name                                                         = var.name
   description                                                  = var.description
@@ -36,7 +36,7 @@ resource "github_team" "this" {
 }
 
 resource "github_team_members" "this" {
-  for_each = var.teams
+  for_each = { for team, data in var.teams : team => data if data["members"] != null || data["maintainers"] != null }
   team_id  = github_team.this[each.key].id
   dynamic "members" {
     for_each = each.value["members"] != null ? each.value["members"] : []
@@ -272,35 +272,35 @@ resource "github_actions_organization_permissions" "this" {
 resource "github_actions_runner_group" "this" {
   for_each   = (var.enterprise && try(var.runner_groups, null) != null) ? var.runner_groups : {}
   name       = each.key
-  visibility = each.value.repositories != null ? "selected" : "all"
+  visibility = try(each.value.repositories, null) != null ? "selected" : "all"
   selected_repository_ids = [for repository in try(each.value.repositories, []) :
     data.github_repository.this[repository].repo_id
   ]
-  restricted_to_workflows = each.value.workflows != null
-  selected_workflows      = each.value.workflows
+  restricted_to_workflows = try(each.value.workflows, null) != null
+  selected_workflows      = try(each.value.workflows, null)
 }
 
 # Local variables
 locals {
   repositories = distinct(concat(
-    flatten([
+    var.secrets == null ? [] : flatten([
       for secret, secret_data in var.secrets : secret_data.repositories if secret_data.repositories != null
     ]),
-    flatten([
+    var.variables == null ? [] : flatten([
       for variable, variable_data in var.variables : variable_data.repositories if variable_data.repositories != null
     ]),
-    flatten([
+    var.rulesets == null ? [] : flatten([
       for _, data in flatten(try([for r in var.rulesets : r.required_workflows], [])) : try(data.repository, null)
     ]),
     try(var.actions_permissions.selected_repositories, []),
     try(var.runner_groups.repositories, []),
   ))
 
-  managed_secrets = {
+  managed_secrets = var.secrets == null ? {} : {
     for secret, secret_data in var.secrets : secret => secret_data
     if secret_data.plaintext_value != null || secret_data.encrypted_value != null
   }
-  existing_secrets = {
+  existing_secrets = var.secrets == null ? {} : {
     for secret, secret_data in var.secrets : secret => secret_data
     if secret_data.plaintext_value == null && secret_data.encrypted_value == null
   }
